@@ -2,10 +2,7 @@ package gt.research.losf.journal;
 
 import android.util.ArrayMap;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
-
-import gt.research.losf.util.LogUtils;
 
 /**
  * Created by ayi.zty on 2016/3/16.

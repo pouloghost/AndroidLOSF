@@ -61,7 +61,14 @@ public class Journal implements IJournal {
     }
 
     @Override
-    public int deleteBlock(int id) {
+    public int deleteBlock(final int id) {
+        iterateOverBlocks(new BlockIterateCallback() {
+            @Override
+            public boolean onBlock(RandomAccessFile file, int index) throws Exception {
+                BlockInfo blockInfo = new BlockInfo(file);
+                return id == blockInfo.;
+            }
+        }, false);
         return 0;
     }
 
@@ -70,21 +77,45 @@ public class Journal implements IJournal {
         return 0;
     }
 
-    private void iterate
     private void moveToNextEmptyIndex() {
+        iterateOverBlocks(new BlockIterateCallback() {
+            @Override
+            public boolean onBlock(RandomAccessFile file, int index) throws IOException {
+                return !BlockUtils.isCurrentInfoVailable(file);
+            }
+        }, false);
+    }
+
+    private void iterateOverBlocks(BlockIterateCallback callback, boolean restoreFileSeeker) {
+        if (null == callback) {
+            return;
+        }
         int startIndex = mLastIndex;
         try {
             do {
                 mLastIndex = ++mLastIndex % sCount;
                 long offset = mLastIndex * BlockInfo.LENGTH;
                 mFile.seek(offset);
-            } while (!BlockUtils.isCurrentInfoVailable(mFile) && startIndex != mLastIndex);
-        } catch (IOException e) {
+            } while (callback.onBlock(mFile, mLastIndex) && startIndex != mLastIndex);
+        } catch (Exception e) {
             LogUtils.exception(this, e);
             mLastIndex = RESULT_INDEX_EXCEPTION;
         }
         if (startIndex == mLastIndex) {
             mLastIndex = RESULT_INDEX_FULL;
         }
+        if (restoreFileSeeker) {
+            mLastIndex = startIndex;
+            try {
+                mFile.seek(mLastIndex * BlockInfo.LENGTH);
+            } catch (IOException e) {
+                LogUtils.exception(this, e);
+            }
+        }
     }
+
+    private interface BlockIterateCallback {
+        boolean onBlock(RandomAccessFile file, int index) throws Exception;
+    }
+
 }

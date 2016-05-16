@@ -12,20 +12,20 @@ import gt.research.losf.util.TypeUtils;
  * Created by ayi.zty on 2016/3/16.
  */
 public class BlockInfo {
-    private static final int sStateLength = 1;
-    private static final int sUriLength = 256;
-    private static final int sBlockLength = 10;
-    private static final int sOffsetLength = 10;
+    public static final int STATE_LENGTH = 1;
+    public static final int URI_LENGTH = 256;
+    public static final int BLOCK_LENGTH = 10;
+    public static final int OFFSET_LENGTH = 10;
 
     public static final char STATE_PROGRESS = 'p';
     public static final char STATE_DELETE = 'd';
     public static final char STATE_NEW = 'n';
 
-    public static final int LENGTH = sStateLength + sUriLength + sBlockLength + sOffsetLength;
+    public static final int LENGTH = STATE_LENGTH + URI_LENGTH + BLOCK_LENGTH + OFFSET_LENGTH;
 
     private char mState;
     private String mUri;
-    private int mBlock;
+    private int mBlockId;
     private int mOffset;//offset of this block in file (next reading start)
 
     public BlockInfo() {
@@ -35,7 +35,7 @@ public class BlockInfo {
     public BlockInfo(String uri, int blockId, int offset) {
         mState = STATE_NEW;
         mUri = uri;
-        mBlock = blockId;
+        mBlockId = blockId;
         mOffset = offset;
     }
 
@@ -56,29 +56,29 @@ public class BlockInfo {
         boolean result = STATE_PROGRESS == mState ||
                 STATE_DELETE == mState || STATE_NEW == mState;
         result &= !TextUtils.isEmpty(mUri);
-        result &= mBlock > 0;
+        result &= mBlockId > 0;
         result &= mOffset > 0;
         return result;
     }
 
     public void fromChars(char[] raw) {
-        int offset = sStateLength;
+        int offset = STATE_LENGTH;
         mState = raw[0];
-        mUri = readValue(raw, offset, totalLength(sStateLength, sUriLength));
-        offset += sUriLength;
-        mBlock = Integer.valueOf(readValue(raw, offset,
-                totalLength(sStateLength, sUriLength, sBlockLength)));
-        offset += sBlockLength;
+        mUri = readValue(raw, offset, totalLength(STATE_LENGTH, URI_LENGTH));
+        offset += URI_LENGTH;
+        mBlockId = Integer.valueOf(readValue(raw, offset,
+                totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH)));
+        offset += BLOCK_LENGTH;
         mOffset = Integer.valueOf(readValue(raw, offset, totalLength(LENGTH)));
     }
 
     public char[] toRaw() {
-        int offset = sStateLength;
+        int offset = STATE_LENGTH;
         char[] raw = new char[LENGTH];
         raw[0] = mState;
-        offset = fillSpace(raw, mUri, offset, totalLength(sStateLength, sUriLength));
-        offset = fillSpace(raw, String.valueOf(mBlock), offset,
-                totalLength(sStateLength, sUriLength, sBlockLength));
+        offset = fillSpace(raw, mUri, offset, totalLength(STATE_LENGTH, URI_LENGTH));
+        offset = fillSpace(raw, String.valueOf(mBlockId), offset,
+                totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH));
         fillSpace(raw, String.valueOf(mOffset), offset, totalLength(LENGTH));
         return raw;
     }

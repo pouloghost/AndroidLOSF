@@ -11,7 +11,7 @@ import gt.research.losf.util.TypeUtils;
 /**
  * Created by ayi.zty on 2016/3/16.
  */
-public class BlockInfo {
+public class FileBlockInfo {
     public static final int STATE_LENGTH = 1;
     public static final int URI_LENGTH = 256;
     public static final int BLOCK_LENGTH = 10;
@@ -28,28 +28,44 @@ public class BlockInfo {
     private int mBlockId;
     private int mOffset;//offset of this block in file (next reading start)
 
-    public BlockInfo() {
+    public FileBlockInfo() {
 
     }
 
-    public BlockInfo(String uri, int blockId, int offset) {
+    public FileBlockInfo(String uri, int blockId, int offset) {
         mState = STATE_NEW;
         mUri = uri;
         mBlockId = blockId;
         mOffset = offset;
     }
 
-    public BlockInfo(char[] raw) {
+    public FileBlockInfo(char[] raw) {
         fromChars(raw);
     }
 
-    public BlockInfo(RandomAccessFile file) throws Exception {
-        byte[] bytes = new byte[2 * LENGTH];
-        int read = file.read(bytes);
-        if (LENGTH * 2 != read) {
+    public FileBlockInfo(RandomAccessFile file) throws Exception {
+        byte[] bytes = new byte[LENGTH];
+        int read = file.read(bytes, 0, LENGTH);
+        if (LENGTH != read) {
             throw new Exception("Illegal Length " + read);
         }
         fromChars(TypeUtils.bytesToChars(bytes));
+    }
+
+    public char getState() {
+        return mState;
+    }
+
+    public String getUri() {
+        return mUri;
+    }
+
+    public int getBlockId() {
+        return mBlockId;
+    }
+
+    public int getOffset() {
+        return mOffset;
     }
 
     public boolean isLegal() {
@@ -111,7 +127,7 @@ public class BlockInfo {
         if (offset >= end) {
             return end;
         }
-        Arrays.fill(raw, offset, end + 1, ' ');
+        Arrays.fill(raw, offset, Math.min(end + 1, raw.length), ' ');
         return end;
     }
 

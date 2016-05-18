@@ -26,6 +26,6 @@ public class LogUtils {
         if (me instanceof String) {
             suffix = (String) me;
         }
-        Log.e("GT-" + suffix, "", e);
+//        Log.e("GT-" + suffix, "", e);
     }
 }

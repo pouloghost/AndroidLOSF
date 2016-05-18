@@ -3,7 +3,7 @@ package gt.research.losf.util;
 import android.util.Log;
 
 /**
- * Created by ayi.zty on 2016/1/26.
+ * Created by GT on 2016/1/26.
  */
 public class LogUtils {
     public static void debug(Object me, String msg) {

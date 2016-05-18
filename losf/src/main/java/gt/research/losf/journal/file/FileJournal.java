@@ -1,4 +1,4 @@
-package gt.research.losf.journal;
+package gt.research.losf.journal.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,19 +7,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import gt.research.losf.common.Reference;
+import gt.research.losf.journal.IBlockInfo;
+import gt.research.losf.journal.IJournal;
 import gt.research.losf.journal.util.BlockUtils;
 import gt.research.losf.util.LogUtils;
 
 /**
- * Created by ayi.zty on 2016/3/16.
+ * Created by GT on 2016/3/16.
  */
 public class FileJournal implements IJournal {
-    public static final int RESULT_SUCCESS = 0;
-    public static final int RESULT_FAIL = -1;
-
-    public static final int RESULT_INDEX_EXCEPTION = -1;
-    public static final int RESULT_INDEX_FULL = -2;
-
     private static final int sCount = 10;//100 lines of journal
     private static final int sLength = FileBlockInfo.LENGTH * sCount;
     private RandomAccessFile mFile;
@@ -30,7 +26,10 @@ public class FileJournal implements IJournal {
     private int mSize = 0;
 
     public FileJournal(String name) throws IOException {
-        File file = new File(name);
+        this(new File(name));
+    }
+
+    public FileJournal(File file) throws IOException {
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -77,6 +76,7 @@ public class FileJournal implements IJournal {
 
     @Override
     public int deleteBlock(final int id) {
+        int lastSize = mSize;
         iterateOverBlocks(new BlockIterateCallback() {
             @Override
             public boolean onBlock(RandomAccessFile file, int index) throws Exception {
@@ -92,11 +92,12 @@ public class FileJournal implements IJournal {
                 return false;
             }
         }, false);
-        return mLastIndex;
+        return lastSize == mSize ? RESULT_FAIL : RESULT_SUCCESS;
     }
 
     @Override
     public int deleteBlock(final String uri) {
+        int lastSize = mSize;
         iterateOverBlocks(new BlockIterateCallback() {
             @Override
             public boolean onBlock(RandomAccessFile file, int index) throws Exception {
@@ -111,7 +112,7 @@ public class FileJournal implements IJournal {
                 return false;
             }
         }, false);
-        return mLastIndex;
+        return lastSize == mSize ? RESULT_FAIL : RESULT_SUCCESS;
     }
 
     @Override
@@ -125,7 +126,7 @@ public class FileJournal implements IJournal {
     }
 
     @Override
-    public FileBlockInfo getBlock(final int id) {
+    public IBlockInfo getBlock(final int id) {
         final Reference<FileBlockInfo> ref = new Reference<>();
         iterateOverBlocks(new BlockIterateCallback() {
             @Override
@@ -145,8 +146,8 @@ public class FileJournal implements IJournal {
     }
 
     @Override
-    public List<FileBlockInfo> getBlocks(final String uri) {
-        final LinkedList<FileBlockInfo> list = new LinkedList<>();
+    public List<IBlockInfo> getBlocks(final String uri) {
+        final LinkedList<IBlockInfo> list = new LinkedList<>();
         iterateOverBlocks(new BlockIterateCallback() {
             @Override
             public boolean onBlock(RandomAccessFile file, int index) throws Exception {

@@ -5,7 +5,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 /**
- * Created by ayi.zty on 2016/3/16.
+ * Created by GT on 2016/3/16.
  */
 public class TypeUtils {
     private static Charset sUtf8Charset = Charset.forName("UTF-8");

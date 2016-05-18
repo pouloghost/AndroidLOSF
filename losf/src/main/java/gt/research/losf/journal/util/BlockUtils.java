@@ -3,11 +3,11 @@ package gt.research.losf.journal.util;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import gt.research.losf.journal.FileBlockInfo;
+import gt.research.losf.journal.file.FileBlockInfo;
 import gt.research.losf.util.TypeUtils;
 
 /**
- * Created by ayi.zty on 2016/3/28.
+ * Created by GT on 2016/3/28.
  */
 public class BlockUtils {
     private static byte[] sReadBuffer = new byte[2];

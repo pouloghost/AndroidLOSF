@@ -7,12 +7,13 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import gt.research.losf.journal.FileBlockInfo;
-import gt.research.losf.journal.FileJournal;
+import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IJournal;
+import gt.research.losf.journal.file.FileBlockInfo;
+import gt.research.losf.journal.file.FileJournal;
 
 /**
- * Created by ayi.zty on 2016/5/17.
+ * Created by GT on 2016/5/17.
  */
 public class JournalTest {
     private IJournal mJournal;
@@ -37,7 +38,7 @@ public class JournalTest {
         mJournal.addBlock(1, "f", 0);
         Assert.assertEquals(mJournal.getSize(), 1);
         Assert.assertEquals(mJournal.isFull(), false);
-        FileBlockInfo blockInfo = mJournal.getBlock(1);
+        IBlockInfo blockInfo = mJournal.getBlock(1);
         Assert.assertNotNull(blockInfo);
         Assert.assertEquals(2, blockInfo.getBlockId());
         Assert.assertEquals("f", blockInfo.getUri());
@@ -50,7 +51,7 @@ public class JournalTest {
         mJournal.deleteBlock(1);
         Assert.assertEquals(mJournal.getSize(), 0);
         Assert.assertEquals(mJournal.isFull(), false);
-        FileBlockInfo blockInfo = mJournal.getBlock(1);
+        IBlockInfo blockInfo = mJournal.getBlock(1);
         Assert.assertNull(blockInfo);
     }
 }

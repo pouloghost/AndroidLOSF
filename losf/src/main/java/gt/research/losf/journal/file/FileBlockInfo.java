@@ -1,4 +1,4 @@
-package gt.research.losf.journal;
+package gt.research.losf.journal.file;
 
 import android.text.TextUtils;
 
@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 
+import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.util.TypeUtils;
 
 /**
- * Created by ayi.zty on 2016/3/16.
+ * Created by GT on 2016/3/16.
  */
-public class FileBlockInfo {
+public class FileBlockInfo implements IBlockInfo {
     public static final int STATE_LENGTH = 1;
     public static final int URI_LENGTH = 256;
     public static final int BLOCK_LENGTH = 10;
@@ -52,22 +53,27 @@ public class FileBlockInfo {
         fromChars(TypeUtils.bytesToChars(bytes));
     }
 
+    @Override
     public char getState() {
         return mState;
     }
 
+    @Override
     public String getUri() {
         return mUri;
     }
 
+    @Override
     public int getBlockId() {
         return mBlockId;
     }
 
+    @Override
     public int getOffset() {
         return mOffset;
     }
 
+    @Override
     public boolean isLegal() {
         boolean result = STATE_PROGRESS == mState ||
                 STATE_DELETE == mState || STATE_NEW == mState;

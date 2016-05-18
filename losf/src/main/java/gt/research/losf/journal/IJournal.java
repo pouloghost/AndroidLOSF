@@ -14,7 +14,7 @@ public interface IJournal {
     int RESULT_INDEX_EXCEPTION = -1;
     int RESULT_INDEX_FULL = -2;
 
-    int addBlock(FileBlockInfo info);
+    int addBlock(IBlockInfo info);
 
     int addBlock(int id, String uri, int offset);
 

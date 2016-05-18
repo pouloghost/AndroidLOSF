@@ -50,7 +50,7 @@ public class FileJournalManager implements IJournal {
     }
 
     @Override
-    public int addBlock(FileBlockInfo info) {
+    public int addBlock(IBlockInfo info) {
         for (IJournal journal : mJournals) {
             if (!journal.isFull()) {
                 return journal.addBlock(info);

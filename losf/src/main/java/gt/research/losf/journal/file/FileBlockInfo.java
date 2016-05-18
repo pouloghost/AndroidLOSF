@@ -18,10 +18,6 @@ public class FileBlockInfo implements IBlockInfo {
     public static final int BLOCK_LENGTH = 10;
     public static final int OFFSET_LENGTH = 10;
 
-    public static final char STATE_PROGRESS = 'p';
-    public static final char STATE_DELETE = 'd';
-    public static final char STATE_NEW = 'n';
-
     public static final int LENGTH = STATE_LENGTH + URI_LENGTH + BLOCK_LENGTH + OFFSET_LENGTH;
 
     private char mState;
@@ -110,19 +106,7 @@ public class FileBlockInfo implements IBlockInfo {
         file.write(bytes);
     }
 
-    public void setStateProgressAndFile(RandomAccessFile file) throws IOException {
-        setStateAndFile(file, STATE_PROGRESS);
-    }
-
-    public void setStateDeleteAndFile(RandomAccessFile file) throws IOException {
-        setStateAndFile(file, STATE_DELETE);
-    }
-
-    public void setStateNewAndFile(RandomAccessFile file) throws IOException {
-        setStateAndFile(file, STATE_NEW);
-    }
-
-    private void setStateAndFile(RandomAccessFile file, char state) throws IOException {
+    public void setStateAndFile(RandomAccessFile file, char state) throws IOException {
         mState = state;
         file.writeChar(mState);
     }

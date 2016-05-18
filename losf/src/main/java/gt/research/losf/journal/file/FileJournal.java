@@ -55,11 +55,11 @@ public class FileJournal implements IJournal {
     }
 
     @Override
-    public int addBlock(FileBlockInfo info) {
+    public int addBlock(IBlockInfo info) {
         moveToNextEmptyIndex();
         if (mLastIndex >= 0) {
             try {
-                info.writeToFile(mFile);
+                ((FileBlockInfo)info).writeToFile(mFile);
                 ++mSize;
                 return RESULT_SUCCESS;
             } catch (IOException e) {
@@ -85,7 +85,7 @@ public class FileJournal implements IJournal {
                 }
                 FileBlockInfo blockInfo = new FileBlockInfo(file);
                 if (id == blockInfo.getBlockId()) {
-                    blockInfo.setStateDeleteAndFile(file);
+                    blockInfo.setStateAndFile(file, IBlockInfo.STATE_DELETE);
                     --mSize;
                     return true;
                 }
@@ -106,7 +106,7 @@ public class FileJournal implements IJournal {
                 }
                 FileBlockInfo blockInfo = new FileBlockInfo(file);
                 if (uri.equals(blockInfo.getUri())) {
-                    blockInfo.setStateDeleteAndFile(file);
+                    blockInfo.setStateAndFile(file, IBlockInfo.STATE_DELETE);
                     --mSize;
                 }
                 return false;

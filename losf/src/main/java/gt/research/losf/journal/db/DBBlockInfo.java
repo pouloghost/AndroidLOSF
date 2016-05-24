@@ -7,51 +7,33 @@ import gt.research.losf.journal.IBlockInfo;
 /**
  * Created by ayi.zty on 2016/5/18.
  */
-public class DBBlockInfo implements IBlockInfo {
-    private Block mData = new Block();
-
+public class DBBlockInfo extends Block implements IBlockInfo {
     public DBBlockInfo() {
-
+        super();
     }
 
     public DBBlockInfo(String uri, int blockId, int offset) {
-        mData.setState(STATE_NEW + "");
-        mData.setUri(uri);
-        mData.setId(blockId);
-        mData.setOffset(offset);
+        super(blockId, uri, String.valueOf(STATE_NEW), offset);
     }
 
-    public DBBlockInfo(Block data) {
-        mData = data;
-    }
-
-    public Block getData() {
-        return mData;
+    public DBBlockInfo(Block block) {
+        this(block.getUri(), block.getId(), block.getOffset());
+        setState(block.getState());
     }
 
     @Override
-    public char getState() {
-        return mData.getState().charAt(0);
-    }
-
-    @Override
-    public String getUri() {
-        return mData.getUri();
+    public char getBlockState() {
+        return super.getState().charAt(0);
     }
 
     @Override
     public int getBlockId() {
-        return mData.getId();
-    }
-
-    @Override
-    public int getOffset() {
-        return mData.getOffset();
+        return super.getId();
     }
 
     @Override
     public boolean isLegal() {
-        char state = getState();
+        char state = getBlockState();
         boolean result = STATE_PROGRESS == state ||
                 STATE_DELETE == state || STATE_NEW == state;
         result &= !TextUtils.isEmpty(getUri());
@@ -59,4 +41,6 @@ public class DBBlockInfo implements IBlockInfo {
         result &= getOffset() > 0;
         return result;
     }
+
+
 }

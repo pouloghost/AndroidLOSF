@@ -50,7 +50,7 @@ public class FileBlockInfo implements IBlockInfo {
     }
 
     @Override
-    public char getState() {
+    public char getBlockState() {
         return mState;
     }
 

@@ -8,7 +8,7 @@ public interface IBlockInfo {
     char STATE_DELETE = 'd';
     char STATE_NEW = 'n';
 
-    char getState();
+    char getBlockState();
 
     String getUri();
 

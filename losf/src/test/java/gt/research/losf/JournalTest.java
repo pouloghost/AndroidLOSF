@@ -43,7 +43,7 @@ public class JournalTest {
         Assert.assertEquals(2, blockInfo.getBlockId());
         Assert.assertEquals("f", blockInfo.getUri());
         Assert.assertEquals(0, blockInfo.getOffset());
-        Assert.assertEquals(FileBlockInfo.STATE_NEW, blockInfo.getState());
+        Assert.assertEquals(FileBlockInfo.STATE_NEW, blockInfo.getBlockState());
     }
 
     @Test

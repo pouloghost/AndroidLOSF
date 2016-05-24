@@ -26,8 +26,10 @@ public class DBJournal implements IJournal {
 
     @Override
     public int addBlock(IBlockInfo info) {
-        Block block = ((DBBlockInfo) info).getData();
-        long id = mDao.insertOrReplace(block);
+        if (!(info instanceof Block)) {
+            return RESULT_FAIL;
+        }
+        long id = mDao.insertOrReplace((Block) info);
         return id < 0 ? RESULT_FAIL : RESULT_SUCCESS;
     }
 

@@ -13,6 +13,7 @@ public class Block {
     private String state;
     private int offset;
 
+
     public Block() {
     }
 

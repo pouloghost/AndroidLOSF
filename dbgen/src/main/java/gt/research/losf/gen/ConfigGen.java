@@ -75,7 +75,6 @@ public class ConfigGen {
         FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);
-            MessageDigest fullDigest = MessageDigest.getInstance("MD5");
             MessageDigest blockDigest = MessageDigest.getInstance("MD5");
             byte[] tmp = new byte[sBlockSize];
             int offset = 0;
@@ -83,7 +82,6 @@ public class ConfigGen {
             int read;
             do {
                 read = inputStream.read(tmp);
-                fullDigest.update(tmp);
                 blockDigest.reset();
                 blockDigest.update(tmp);
 
@@ -97,7 +95,6 @@ public class ConfigGen {
                 ++index;
                 System.out.println("index " + index + " offset " + offset);
             } while (sBlockSize == read);
-            taskConfig.md5 = getMd5String(fullDigest);
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         } finally {

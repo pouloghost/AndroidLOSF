@@ -59,7 +59,7 @@ public class FileJournal implements IJournal {
         moveToNextEmptyIndex();
         if (mLastIndex >= 0) {
             try {
-                ((FileBlockInfo)info).writeToFile(mFile);
+                ((FileBlockInfo) info).writeToFile(mFile);
                 ++mSize;
                 return RESULT_SUCCESS;
             } catch (IOException e) {
@@ -70,8 +70,8 @@ public class FileJournal implements IJournal {
     }
 
     @Override
-    public int addBlock(int id, String uri, int offset) {
-        return addBlock(new FileBlockInfo(uri, id, offset));
+    public int addBlock(int id, String uri, int offset, int network, int end, String md5) {
+        return addBlock(new FileBlockInfo(uri, id, offset, network, end, md5));
     }
 
     @Override

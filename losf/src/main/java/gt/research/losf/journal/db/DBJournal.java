@@ -34,8 +34,8 @@ public class DBJournal implements IJournal {
     }
 
     @Override
-    public int addBlock(int id, String uri, int offset) {
-        return addBlock(new DBBlockInfo(uri, id, offset));
+    public int addBlock(int id, String uri, int offset, int network, int end, String md5) {
+        return addBlock(new DBBlockInfo(uri, id, offset, network, end, md5));
     }
 
     @Override

@@ -2,8 +2,6 @@ package gt.research.losf.journal;
 
 import java.util.List;
 
-import gt.research.losf.journal.file.FileBlockInfo;
-
 /**
  * Created by GT on 2016/3/28.
  */
@@ -16,7 +14,7 @@ public interface IJournal {
 
     int addBlock(IBlockInfo info);
 
-    int addBlock(int id, String uri, int offset);
+    int addBlock(int id, String uri, int offset, int network, int end, String md5);
 
     int deleteBlock(int id);
 

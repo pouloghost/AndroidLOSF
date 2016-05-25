@@ -36,13 +36,14 @@ public class FileBlockInfo implements IBlockInfo {
 
     }
 
-    public FileBlockInfo(String uri, int blockId, int offset, int network, int end) {
+    public FileBlockInfo(String uri, int blockId, int offset, int network, int end, String md5) {
         mState = STATE_NEW;
         mUri = uri;
         mBlockId = blockId;
         mOffset = offset;
         mNetworkLevel = network;
         mEnd = end;
+        mMd5 = md5;
     }
 
     public FileBlockInfo(char[] raw) {

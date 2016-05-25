@@ -1,1 +1,1 @@
-include ':app', ':losf', ':dbgen'
+include ':app', ':losf', ':dbgen', ':api'

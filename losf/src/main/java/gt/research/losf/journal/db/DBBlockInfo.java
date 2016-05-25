@@ -5,19 +5,19 @@ import android.text.TextUtils;
 import gt.research.losf.journal.IBlockInfo;
 
 /**
- * Created by ayi.zty on 2016/5/18.
+ * Created by GT on 2016/5/18.
  */
 public class DBBlockInfo extends Block implements IBlockInfo {
     public DBBlockInfo() {
         super();
     }
 
-    public DBBlockInfo(String uri, int blockId, int offset) {
-        super(blockId, uri, String.valueOf(STATE_NEW), offset);
+    public DBBlockInfo(String uri, int blockId, int offset, int network) {
+        super(blockId, uri, String.valueOf(STATE_NEW), offset, network);
     }
 
     public DBBlockInfo(Block block) {
-        this(block.getUri(), block.getId(), block.getOffset());
+        this(block.getUri(), block.getId(), block.getOffset(), block.getNetwork());
         setState(block.getState());
     }
 
@@ -29,6 +29,11 @@ public class DBBlockInfo extends Block implements IBlockInfo {
     @Override
     public int getBlockId() {
         return super.getId();
+    }
+
+    @Override
+    public int getNetworkLevel() {
+        return super.getNetwork();
     }
 
     @Override

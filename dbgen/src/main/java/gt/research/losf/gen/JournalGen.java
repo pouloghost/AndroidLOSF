@@ -21,5 +21,6 @@ public class JournalGen {
         block.addStringProperty("uri").notNull();
         block.addStringProperty("state").notNull();
         block.addIntProperty("offset").notNull();
+        block.addIntProperty("network").notNull();
     }
 }

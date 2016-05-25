@@ -10,7 +10,7 @@ import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IJournal;
 
 /**
- * Created by ayi.zty on 2016/5/18.
+ * Created by GT on 2016/5/18.
  */
 public class DBJournal implements IJournal {
     private static final String sDBName = "blocks.db";

@@ -27,6 +27,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         public final static Property Uri = new Property(1, String.class, "uri", false, "URI");
         public final static Property State = new Property(2, String.class, "state", false, "STATE");
         public final static Property Offset = new Property(3, int.class, "offset", false, "OFFSET");
+        public final static Property Network = new Property(4, int.class, "network", false, "NETWORK");
     };
 
 
@@ -45,7 +46,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
                 "\"ID\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
                 "\"URI\" TEXT NOT NULL ," + // 1: uri
                 "\"STATE\" TEXT NOT NULL ," + // 2: state
-                "\"OFFSET\" INTEGER NOT NULL );"); // 3: offset
+                "\"OFFSET\" INTEGER NOT NULL ," + // 3: offset
+                "\"NETWORK\" INTEGER NOT NULL );"); // 4: network
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BLOCK_ID ON BLOCK" +
                 " (\"ID\");");
@@ -65,6 +67,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         stmt.bindString(2, entity.getUri());
         stmt.bindString(3, entity.getState());
         stmt.bindLong(4, entity.getOffset());
+        stmt.bindLong(5, entity.getNetwork());
     }
 
     /** @inheritdoc */
@@ -80,7 +83,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
             cursor.getInt(offset + 0), // id
             cursor.getString(offset + 1), // uri
             cursor.getString(offset + 2), // state
-            cursor.getInt(offset + 3) // offset
+            cursor.getInt(offset + 3), // offset
+            cursor.getInt(offset + 4) // network
         );
         return entity;
     }
@@ -92,6 +96,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         entity.setUri(cursor.getString(offset + 1));
         entity.setState(cursor.getString(offset + 2));
         entity.setOffset(cursor.getInt(offset + 3));
+        entity.setNetwork(cursor.getInt(offset + 4));
      }
     
     /** @inheritdoc */

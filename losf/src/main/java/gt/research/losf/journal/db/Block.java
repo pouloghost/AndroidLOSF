@@ -12,7 +12,7 @@ public class Block {
     /** Not-null value. */
     private String state;
     private int offset;
-
+    private int network;
 
     public Block() {
     }
@@ -21,11 +21,12 @@ public class Block {
         this.id = id;
     }
 
-    public Block(int id, String uri, String state, int offset) {
+    public Block(int id, String uri, String state, int offset, int network) {
         this.id = id;
         this.uri = uri;
         this.state = state;
         this.offset = offset;
+        this.network = network;
     }
 
     public int getId() {
@@ -62,6 +63,14 @@ public class Block {
 
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    public int getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(int network) {
+        this.network = network;
     }
 
 }

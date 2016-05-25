@@ -18,5 +18,7 @@ public interface IBlockInfo {
 
     int getNetworkLevel();
 
+    int getEndOffset();
+
     boolean isLegal();
 }

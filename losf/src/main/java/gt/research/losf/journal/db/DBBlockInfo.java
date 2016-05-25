@@ -12,12 +12,13 @@ public class DBBlockInfo extends Block implements IBlockInfo {
         super();
     }
 
-    public DBBlockInfo(String uri, int blockId, int offset, int network) {
-        super(blockId, uri, String.valueOf(STATE_NEW), offset, network);
+    public DBBlockInfo(String uri, int blockId, int offset, int network, int end) {
+        super(blockId, uri, String.valueOf(STATE_NEW), offset, network, end);
     }
 
     public DBBlockInfo(Block block) {
-        this(block.getUri(), block.getId(), block.getOffset(), block.getNetwork());
+        this(block.getUri(), block.getId(),
+                block.getOffset(), block.getNetwork(), block.getEnd());
         setState(block.getState());
     }
 
@@ -37,6 +38,11 @@ public class DBBlockInfo extends Block implements IBlockInfo {
     }
 
     @Override
+    public int getEndOffset() {
+        return super.getEnd();
+    }
+
+    @Override
     public boolean isLegal() {
         char state = getBlockState();
         boolean result = STATE_PROGRESS == state ||
@@ -44,6 +50,8 @@ public class DBBlockInfo extends Block implements IBlockInfo {
         result &= !TextUtils.isEmpty(getUri());
         result &= getBlockId() > 0;
         result &= getOffset() > 0;
+        result &= getNetworkLevel() > 0;
+        result &= getEnd() >= getOffset();
         return result;
     }
 

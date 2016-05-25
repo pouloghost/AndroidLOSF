@@ -28,6 +28,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         public final static Property State = new Property(2, String.class, "state", false, "STATE");
         public final static Property Offset = new Property(3, int.class, "offset", false, "OFFSET");
         public final static Property Network = new Property(4, int.class, "network", false, "NETWORK");
+        public final static Property End = new Property(5, int.class, "end", false, "END");
     };
 
 
@@ -47,7 +48,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
                 "\"URI\" TEXT NOT NULL ," + // 1: uri
                 "\"STATE\" TEXT NOT NULL ," + // 2: state
                 "\"OFFSET\" INTEGER NOT NULL ," + // 3: offset
-                "\"NETWORK\" INTEGER NOT NULL );"); // 4: network
+                "\"NETWORK\" INTEGER NOT NULL ," + // 4: network
+                "\"END\" INTEGER NOT NULL );"); // 5: end
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BLOCK_ID ON BLOCK" +
                 " (\"ID\");");
@@ -68,6 +70,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         stmt.bindString(3, entity.getState());
         stmt.bindLong(4, entity.getOffset());
         stmt.bindLong(5, entity.getNetwork());
+        stmt.bindLong(6, entity.getEnd());
     }
 
     /** @inheritdoc */
@@ -84,7 +87,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
             cursor.getString(offset + 1), // uri
             cursor.getString(offset + 2), // state
             cursor.getInt(offset + 3), // offset
-            cursor.getInt(offset + 4) // network
+            cursor.getInt(offset + 4), // network
+            cursor.getInt(offset + 5) // end
         );
         return entity;
     }
@@ -97,6 +101,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         entity.setState(cursor.getString(offset + 2));
         entity.setOffset(cursor.getInt(offset + 3));
         entity.setNetwork(cursor.getInt(offset + 4));
+        entity.setEnd(cursor.getInt(offset + 5));
      }
     
     /** @inheritdoc */

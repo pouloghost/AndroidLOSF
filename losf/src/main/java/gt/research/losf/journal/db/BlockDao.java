@@ -29,6 +29,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         public final static Property Offset = new Property(3, int.class, "offset", false, "OFFSET");
         public final static Property Network = new Property(4, int.class, "network", false, "NETWORK");
         public final static Property End = new Property(5, int.class, "end", false, "END");
+        public final static Property Md5 = new Property(6, String.class, "md5", false, "MD5");
     };
 
 
@@ -49,7 +50,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
                 "\"STATE\" TEXT NOT NULL ," + // 2: state
                 "\"OFFSET\" INTEGER NOT NULL ," + // 3: offset
                 "\"NETWORK\" INTEGER NOT NULL ," + // 4: network
-                "\"END\" INTEGER NOT NULL );"); // 5: end
+                "\"END\" INTEGER NOT NULL ," + // 5: end
+                "\"MD5\" TEXT);"); // 6: md5
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BLOCK_ID ON BLOCK" +
                 " (\"ID\");");
@@ -71,6 +73,11 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         stmt.bindLong(4, entity.getOffset());
         stmt.bindLong(5, entity.getNetwork());
         stmt.bindLong(6, entity.getEnd());
+ 
+        String md5 = entity.getMd5();
+        if (md5 != null) {
+            stmt.bindString(7, md5);
+        }
     }
 
     /** @inheritdoc */
@@ -88,7 +95,8 @@ public class BlockDao extends AbstractDao<Block, Integer> {
             cursor.getString(offset + 2), // state
             cursor.getInt(offset + 3), // offset
             cursor.getInt(offset + 4), // network
-            cursor.getInt(offset + 5) // end
+            cursor.getInt(offset + 5), // end
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // md5
         );
         return entity;
     }
@@ -102,6 +110,7 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         entity.setOffset(cursor.getInt(offset + 3));
         entity.setNetwork(cursor.getInt(offset + 4));
         entity.setEnd(cursor.getInt(offset + 5));
+        entity.setMd5(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */

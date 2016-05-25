@@ -14,6 +14,7 @@ public class Block {
     private int offset;
     private int network;
     private int end;
+    private String md5;
 
     public Block() {
     }
@@ -22,13 +23,14 @@ public class Block {
         this.id = id;
     }
 
-    public Block(int id, String uri, String state, int offset, int network, int end) {
+    public Block(int id, String uri, String state, int offset, int network, int end, String md5) {
         this.id = id;
         this.uri = uri;
         this.state = state;
         this.offset = offset;
         this.network = network;
         this.end = end;
+        this.md5 = md5;
     }
 
     public int getId() {
@@ -81,6 +83,14 @@ public class Block {
 
     public void setEnd(int end) {
         this.end = end;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 
 }

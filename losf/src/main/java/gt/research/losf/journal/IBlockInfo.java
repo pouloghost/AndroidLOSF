@@ -20,5 +20,7 @@ public interface IBlockInfo {
 
     int getEndOffset();
 
+    String getMd5();
+
     boolean isLegal();
 }

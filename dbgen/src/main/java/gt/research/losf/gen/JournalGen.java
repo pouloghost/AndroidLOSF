@@ -23,5 +23,6 @@ public class JournalGen {
         block.addIntProperty("offset").notNull();
         block.addIntProperty("network").notNull();
         block.addIntProperty("end").notNull();
+        block.addStringProperty("md5");
     }
 }

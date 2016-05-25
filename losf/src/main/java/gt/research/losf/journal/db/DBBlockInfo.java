@@ -12,13 +12,13 @@ public class DBBlockInfo extends Block implements IBlockInfo {
         super();
     }
 
-    public DBBlockInfo(String uri, int blockId, int offset, int network, int end) {
-        super(blockId, uri, String.valueOf(STATE_NEW), offset, network, end);
+    public DBBlockInfo(String uri, int blockId, int offset, int network, int end, String md5) {
+        super(blockId, uri, String.valueOf(STATE_NEW), offset, network, end, md5);
     }
 
     public DBBlockInfo(Block block) {
-        this(block.getUri(), block.getId(),
-                block.getOffset(), block.getNetwork(), block.getEnd());
+        this(block.getUri(), block.getId(), block.getOffset(),
+                block.getNetwork(), block.getEnd(), block.getMd5());
         setState(block.getState());
     }
 

@@ -19,9 +19,10 @@ public class FileBlockInfo implements IBlockInfo {
     public static final int OFFSET_LENGTH = 10;
     public static final int NETWORK_LENGTH = 10;
     public static final int END_OFFSET_LENGTH = 10;
+    public static final int MD5_LENGTH = 32;
 
     public static final int LENGTH = STATE_LENGTH + URI_LENGTH + BLOCK_LENGTH +
-            OFFSET_LENGTH + NETWORK_LENGTH + END_OFFSET_LENGTH;
+            OFFSET_LENGTH + NETWORK_LENGTH + END_OFFSET_LENGTH + MD5_LENGTH;
 
     private char mState;
     private String mUri;
@@ -29,6 +30,7 @@ public class FileBlockInfo implements IBlockInfo {
     private int mOffset;//offset of this block in file (next reading start)
     private int mNetworkLevel;
     private int mEnd;
+    private String mMd5;
 
     public FileBlockInfo() {
 
@@ -87,6 +89,11 @@ public class FileBlockInfo implements IBlockInfo {
     }
 
     @Override
+    public String getMd5() {
+        return mMd5;
+    }
+
+    @Override
     public boolean isLegal() {
         boolean result = STATE_PROGRESS == mState ||
                 STATE_DELETE == mState || STATE_NEW == mState;
@@ -110,9 +117,14 @@ public class FileBlockInfo implements IBlockInfo {
                 totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH, OFFSET_LENGTH)));
         offset += OFFSET_LENGTH;
         mNetworkLevel = Integer.valueOf(readValue(raw, offset,
-                totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH, OFFSET_LENGTH, END_OFFSET_LENGTH)));
-        offset += END_OFFSET_LENGTH;
-        mEnd = Integer.valueOf(readValue(raw, offset, totalLength(LENGTH)));
+                totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH,
+                        OFFSET_LENGTH, END_OFFSET_LENGTH)));
+        offset += NETWORK_LENGTH;
+        mEnd = Integer.valueOf(readValue(raw, offset,
+                totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH,
+                        OFFSET_LENGTH, END_OFFSET_LENGTH)));
+        offset += MD5_LENGTH;
+        mMd5 = readValue(raw, offset, totalLength(LENGTH));
     }
 
     public char[] toRaw() {
@@ -126,7 +138,9 @@ public class FileBlockInfo implements IBlockInfo {
                 totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH, OFFSET_LENGTH));
         offset = fillSpace(raw, String.valueOf(mNetworkLevel), offset,
                 totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH, OFFSET_LENGTH, END_OFFSET_LENGTH));
-        fillSpace(raw, String.valueOf(mEnd), offset, totalLength(LENGTH));
+        offset = fillSpace(raw, String.valueOf(mEnd), offset, totalLength(STATE_LENGTH, URI_LENGTH, BLOCK_LENGTH,
+                OFFSET_LENGTH, END_OFFSET_LENGTH));
+        fillSpace(raw, mMd5, offset, totalLength(LENGTH));
         return raw;
     }
 

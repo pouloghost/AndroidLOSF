@@ -6,6 +6,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import gt.research.losf.download.control.ControlStateCenter;
+
 /**
  * Created by GT on 2016/5/25.
  */
@@ -13,6 +21,13 @@ public class DownloadManagerService extends Service {
     public static final String ACTION_NEW = "gt.research.losf.download.NEW";
     public static final String ACTION_PAUSE = "gt.research.losf.download.PAUSE";
     public static final String ACTION_CANCEL = "gt.research.losf.download.CANCEL";
+
+    private ExecutorService mExecutorPool;
+
+    @Override
+    public void onCreate() {
+        mExecutorPool = new ThreadPoolExecutor(2, 4, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -28,7 +43,7 @@ public class DownloadManagerService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void doCancelTask(Bundle extra) {
+    private void doAddTask(Bundle extra) {
 
     }
 
@@ -36,7 +51,7 @@ public class DownloadManagerService extends Service {
 
     }
 
-    private void doAddTask(Bundle extra) {
+    private void doCancelTask(Bundle extra) {
 
     }
 

@@ -52,15 +52,33 @@ public class ControlStateCenter {
         }
     }
 
+    public void pause(int... ids) {
+        synchronized (mPendingPauseBlocks) {
+            for (int id : ids) {
+                mPendingPauseBlocks.add(id);
+            }
+        }
+    }
+
     public boolean needPause(int id) {
         synchronized (mPendingPauseBlocks) {
             return mPendingPauseBlocks.contains(id);
         }
     }
 
-    public void paused(int id) {
+    public void paused(int... ids) {
         synchronized (mPendingPauseBlocks) {
-            mPendingPauseBlocks.remove(id);
+            for (int id : ids) {
+                mPendingPauseBlocks.remove(id);
+            }
+        }
+    }
+
+    public void cancel(int... ids) {
+        synchronized (mPendingCancelBlocks) {
+            for (int id : ids) {
+                mPendingCancelBlocks.add(id);
+            }
         }
     }
 
@@ -70,9 +88,11 @@ public class ControlStateCenter {
         }
     }
 
-    public void canceled(int id) {
+    public void canceled(int... ids) {
         synchronized (mPendingCancelBlocks) {
-            mPendingCancelBlocks.remove(id);
+            for (int id : ids) {
+                mPendingCancelBlocks.remove(id);
+            }
         }
     }
 }

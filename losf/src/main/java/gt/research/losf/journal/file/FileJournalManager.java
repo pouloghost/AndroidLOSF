@@ -134,6 +134,12 @@ public class FileJournalManager implements IJournal {
         return resultList.isEmpty() ? null : resultList;
     }
 
+    @Override
+    public List<IBlockInfo> getAllBlocks() {
+        //// TODO: 2016/5/30 add impl
+        return null;
+    }
+
     private void ensurePath(File file) {
         File parent = file.getParentFile();
         if (null == parent) {

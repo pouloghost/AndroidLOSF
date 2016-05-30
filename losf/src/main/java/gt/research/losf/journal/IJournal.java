@@ -29,4 +29,6 @@ public interface IJournal {
     IBlockInfo getBlock(int id);
 
     List<IBlockInfo> getBlocks(String uri);
+
+    List<IBlockInfo> getAllBlocks();
 }

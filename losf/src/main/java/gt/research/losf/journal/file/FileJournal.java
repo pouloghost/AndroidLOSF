@@ -164,6 +164,12 @@ public class FileJournal implements IJournal {
         return list.isEmpty() ? null : list;
     }
 
+    @Override
+    public List<IBlockInfo> getAllBlocks() {
+        //// TODO: 2016/5/30 add impl
+        return null;
+    }
+
     private void moveToNextEmptyIndex() {
         iterateOverBlocks(new BlockIterateCallback() {
             @Override

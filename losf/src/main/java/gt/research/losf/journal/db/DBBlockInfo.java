@@ -54,6 +54,4 @@ public class DBBlockInfo extends Block implements IBlockInfo {
         result &= getEnd() >= getOffset();
         return result;
     }
-
-
 }

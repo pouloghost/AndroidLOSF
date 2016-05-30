@@ -7,6 +7,7 @@ public interface IBlockInfo {
     char STATE_PROGRESS = 'p';
     char STATE_DELETE = 'd';
     char STATE_NEW = 'n';
+    char STATE_FINISH = 'f';
 
     char getBlockState();
 

@@ -80,4 +80,14 @@ public class DBJournal implements IJournal {
         }
         return result;
     }
+
+    @Override
+    public List<IBlockInfo> getAllBlocks() {
+        List<Block> blocks = mDao.loadAll();
+        List<IBlockInfo> converts = new ArrayList<>(blocks.size());
+        for (Block block : blocks) {
+            converts.add(new DBBlockInfo(block));
+        }
+        return converts;
+    }
 }

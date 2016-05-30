@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,6 +25,9 @@ import gt.research.losf.journal.db.DBJournal;
 import gt.research.losf.journal.file.FileJournal;
 import gt.research.losf.util.LogUtils;
 
+import static gt.research.losf.journal.IBlockInfo.STATE_NEW;
+import static gt.research.losf.journal.IBlockInfo.STATE_PROGRESS;
+
 /**
  * Created by GT on 2016/5/25.
  */
@@ -35,11 +39,32 @@ public class DownloadManagerService extends Service {
     public static final String KEY_FILE_NAME = "fileName";
 
     private ExecutorService mExecutorPool;
+    private IJournal mJournal;
 
     @Override
     public void onCreate() {
+        if (IJournal.USE_DB) {
+            mJournal = new DBJournal(LosfApplication.getInstance());
+        } else {
+            try {
+                mJournal = new FileJournal("journal");
+            } catch (IOException e) {
+                LogUtils.exception(this, e);
+            }
+        }
         mExecutorPool = new ThreadPoolExecutor(2, 4, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        //// TODO: 2016/5/30 resume downloads in db
+
+        resumeDownloads();
+    }
+
+    private void resumeDownloads() {
+        List<IBlockInfo> blocks = mJournal.getAllBlocks();
+        for (IBlockInfo block : blocks) {
+            if (STATE_NEW == block.getBlockState() ||
+                    STATE_PROGRESS == block.getBlockState()) {
+                mExecutorPool.execute(new DownloadRunnable(block));
+            }
+        }
     }
 
     @Override
@@ -78,22 +103,12 @@ public class DownloadManagerService extends Service {
     private class InitRunnable implements Runnable {
         @Override
         public void run() {
-            IJournal journal;
-            if (IJournal.USE_DB) {
-                journal = new DBJournal(LosfApplication.getInstance());
-            } else {
-                try {
-                    journal = new FileJournal("journal");
-                } catch (IOException e) {
-                    LogUtils.exception(this, e);
-                }
-            }
             ControlStateCenter state = ControlStateCenter.getInstance();
             Set<FileInfo> fileSet = state.getPendingStarts();
             for (FileInfo file : fileSet) {
                 Collection<IBlockInfo> blocks = file.getBlockInfo();
                 for (IBlockInfo blockInfo : blocks) {
-                    journal.addBlock(blockInfo);
+                    mJournal.addBlock(blockInfo);
                     mExecutorPool.execute(new DownloadRunnable(blockInfo));
                 }
                 state.start(file);

@@ -6,8 +6,6 @@ import java.util.List;
  * Created by GT on 2016/3/28.
  */
 public interface IJournal {
-    boolean USE_DB = true;
-
     int RESULT_SUCCESS = 0;
     int RESULT_FAIL = -1;
 

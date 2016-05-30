@@ -7,7 +7,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -16,14 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import gt.research.losf.LosfApplication;
 import gt.research.losf.download.control.ControlStateCenter;
 import gt.research.losf.download.task.FileInfo;
 import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IJournal;
-import gt.research.losf.journal.db.DBJournal;
-import gt.research.losf.journal.file.FileJournal;
-import gt.research.losf.util.LogUtils;
+import gt.research.losf.journal.JournalMaker;
 
 import static gt.research.losf.journal.IBlockInfo.STATE_NEW;
 import static gt.research.losf.journal.IBlockInfo.STATE_PROGRESS;
@@ -43,15 +39,8 @@ public class DownloadManagerService extends Service {
 
     @Override
     public void onCreate() {
-        if (IJournal.USE_DB) {
-            mJournal = new DBJournal(LosfApplication.getInstance());
-        } else {
-            try {
-                mJournal = new FileJournal("journal");
-            } catch (IOException e) {
-                LogUtils.exception(this, e);
-            }
-        }
+        mJournal = JournalMaker.get();
+
         mExecutorPool = new ThreadPoolExecutor(2, 4, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
         resumeDownloads();

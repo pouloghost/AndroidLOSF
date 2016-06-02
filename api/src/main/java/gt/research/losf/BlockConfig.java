@@ -5,6 +5,6 @@ package gt.research.losf;
  */
 public class BlockConfig {
     public int offset;
-    public int end;
+    public int length;
     public String md5;
 }

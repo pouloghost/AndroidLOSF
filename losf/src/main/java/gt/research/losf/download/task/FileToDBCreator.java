@@ -1,6 +1,6 @@
 package gt.research.losf.download.task;
 
-import gt.research.losf.TaskConfig;
+import gt.research.losf.FileConfig;
 import gt.research.losf.journal.IConfigReader;
 import gt.research.losf.journal.db.DBConfigReader;
 
@@ -13,7 +13,7 @@ public class FileToDBCreator implements FileInfo.ICreator {
 
     @Override
     public FileInfo create() {
-        TaskConfig config = sReader.readConfig();
+        FileConfig config = sReader.readConfig();
         FileInfo info = new FileInfo();
         sConverter.fill(config, info);
         return info;

@@ -1,7 +1,7 @@
 package gt.research.losf.journal.db;
 
 import gt.research.losf.BlockConfig;
-import gt.research.losf.TaskConfig;
+import gt.research.losf.FileConfig;
 import gt.research.losf.download.task.FileInfo;
 import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IConfigReader;
@@ -11,7 +11,7 @@ import gt.research.losf.journal.IConfigReader;
  */
 public class DBConfigReader implements IConfigReader {
     @Override
-    public void fill(TaskConfig config, FileInfo info) {
+    public void fill(FileConfig config, FileInfo info) {
         info.setNetwork(config.network);
         info.setState(IBlockInfo.STATE_NEW);
         info.setUrl(info.getUrl());

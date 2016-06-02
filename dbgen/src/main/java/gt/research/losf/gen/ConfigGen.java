@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -12,7 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import gt.research.losf.BlockConfig;
-import gt.research.losf.TaskConfig;
+import gt.research.losf.FileConfig;
 
 /**
  * Created by GT on 2016/5/25.
@@ -20,10 +19,10 @@ import gt.research.losf.TaskConfig;
 public class ConfigGen {
     private static final String sFilePath = "D:\\Workbench\\AndroidLOSF\\126.jpg";
     private static final String sConfigPath = "D:\\Workbench\\AndroidLOSF\\126.config";
-    private static final int sBlockSize = 16 * 1024;
+    private static final int sBlockSize = 64 * 1024;
 
     public static void main(String[] args) {
-        TaskConfig taskConfig = initTaskConfig();
+        FileConfig taskConfig = initTaskConfig();
 
         String json = JSON.toJSONString(taskConfig);
 
@@ -53,10 +52,11 @@ public class ConfigGen {
         }
     }
 
-    private static TaskConfig initTaskConfig() {
-        TaskConfig taskConfig = new TaskConfig();
-        taskConfig.network = 100;
-        taskConfig.url = "$url";
+    private static FileConfig initTaskConfig() {
+        FileConfig fileConfig = new FileConfig();
+        fileConfig.network = 100;
+        fileConfig.url = "$url";
+        fileConfig.retry = 2;
 
         File file = new File(sFilePath);
         long length = file.length();
@@ -65,16 +65,17 @@ public class ConfigGen {
             ++blockCount;
         }
 
-        taskConfig.blocks = new BlockConfig[blockCount];
+        fileConfig.blocks = new BlockConfig[blockCount];
 
-        fillMd5(file, taskConfig);
-        return taskConfig;
+        fillMd5(file, fileConfig);
+        return fileConfig;
     }
 
-    private static void fillMd5(File file, TaskConfig taskConfig) {
+    private static void fillMd5(File file, FileConfig fileConfig) {
         FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);
+            MessageDigest fileDigest = MessageDigest.getInstance("MD5");
             MessageDigest blockDigest = MessageDigest.getInstance("MD5");
             byte[] tmp = new byte[sBlockSize];
             int offset = 0;
@@ -84,17 +85,19 @@ public class ConfigGen {
                 read = inputStream.read(tmp);
                 blockDigest.reset();
                 blockDigest.update(tmp);
+                fileDigest.update(tmp);
 
                 BlockConfig blockConfig = new BlockConfig();
                 blockConfig.offset = offset;
-                blockConfig.end = offset + read;
+                blockConfig.length = read;
                 blockConfig.md5 = getMd5String(blockDigest);
 
                 offset += read;
-                taskConfig.blocks[index] = blockConfig;
+                fileConfig.blocks[index] = blockConfig;
                 ++index;
                 System.out.println("index " + index + " offset " + offset);
             } while (sBlockSize == read);
+            fileConfig.md5 = getMd5String(fileDigest);
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         } finally {

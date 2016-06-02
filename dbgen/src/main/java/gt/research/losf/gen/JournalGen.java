@@ -18,11 +18,14 @@ public class JournalGen {
     private static void addBlock(Schema schema) {
         Entity block = schema.addEntity("Block");
         block.addIntProperty("id").notNull().primaryKey().index();
-        block.addStringProperty("uri").notNull();
-        block.addStringProperty("state").notNull();
-        block.addIntProperty("offset").notNull();
+        block.addStringProperty("url").notNull();
+        block.addIntProperty("fileOffset").notNull();
+        block.addIntProperty("downloadOffset").notNull();
+        block.addIntProperty("read").notNull();
+        block.addIntProperty("length").notNull();
+        block.addStringProperty("file").notNull();
         block.addIntProperty("network").notNull();
-        block.addIntProperty("end").notNull();
-        block.addStringProperty("md5");
+        block.addIntProperty("retry").notNull();
+        block.addStringProperty("md5").notNull();
     }
 }

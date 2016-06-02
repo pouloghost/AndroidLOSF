@@ -24,12 +24,15 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, int.class, "id", true, "ID");
-        public final static Property Uri = new Property(1, String.class, "uri", false, "URI");
-        public final static Property State = new Property(2, String.class, "state", false, "STATE");
-        public final static Property Offset = new Property(3, int.class, "offset", false, "OFFSET");
-        public final static Property Network = new Property(4, int.class, "network", false, "NETWORK");
-        public final static Property End = new Property(5, int.class, "end", false, "END");
-        public final static Property Md5 = new Property(6, String.class, "md5", false, "MD5");
+        public final static Property Url = new Property(1, String.class, "url", false, "URL");
+        public final static Property FileOffset = new Property(2, int.class, "fileOffset", false, "FILE_OFFSET");
+        public final static Property DownloadOffset = new Property(3, int.class, "downloadOffset", false, "DOWNLOAD_OFFSET");
+        public final static Property Read = new Property(4, int.class, "read", false, "READ");
+        public final static Property Length = new Property(5, int.class, "length", false, "LENGTH");
+        public final static Property File = new Property(6, String.class, "file", false, "FILE");
+        public final static Property Network = new Property(7, int.class, "network", false, "NETWORK");
+        public final static Property Retry = new Property(8, int.class, "retry", false, "RETRY");
+        public final static Property Md5 = new Property(9, String.class, "md5", false, "MD5");
     };
 
 
@@ -46,12 +49,15 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BLOCK\" (" + //
                 "\"ID\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
-                "\"URI\" TEXT NOT NULL ," + // 1: uri
-                "\"STATE\" TEXT NOT NULL ," + // 2: state
-                "\"OFFSET\" INTEGER NOT NULL ," + // 3: offset
-                "\"NETWORK\" INTEGER NOT NULL ," + // 4: network
-                "\"END\" INTEGER NOT NULL ," + // 5: end
-                "\"MD5\" TEXT);"); // 6: md5
+                "\"URL\" TEXT NOT NULL ," + // 1: url
+                "\"FILE_OFFSET\" INTEGER NOT NULL ," + // 2: fileOffset
+                "\"DOWNLOAD_OFFSET\" INTEGER NOT NULL ," + // 3: downloadOffset
+                "\"READ\" INTEGER NOT NULL ," + // 4: read
+                "\"LENGTH\" INTEGER NOT NULL ," + // 5: length
+                "\"FILE\" TEXT NOT NULL ," + // 6: file
+                "\"NETWORK\" INTEGER NOT NULL ," + // 7: network
+                "\"RETRY\" INTEGER NOT NULL ," + // 8: retry
+                "\"MD5\" TEXT NOT NULL );"); // 9: md5
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BLOCK_ID ON BLOCK" +
                 " (\"ID\");");
@@ -68,16 +74,15 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     protected void bindValues(SQLiteStatement stmt, Block entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
-        stmt.bindString(2, entity.getUri());
-        stmt.bindString(3, entity.getState());
-        stmt.bindLong(4, entity.getOffset());
-        stmt.bindLong(5, entity.getNetwork());
-        stmt.bindLong(6, entity.getEnd());
- 
-        String md5 = entity.getMd5();
-        if (md5 != null) {
-            stmt.bindString(7, md5);
-        }
+        stmt.bindString(2, entity.getUrl());
+        stmt.bindLong(3, entity.getFileOffset());
+        stmt.bindLong(4, entity.getDownloadOffset());
+        stmt.bindLong(5, entity.getRead());
+        stmt.bindLong(6, entity.getLength());
+        stmt.bindString(7, entity.getFile());
+        stmt.bindLong(8, entity.getNetwork());
+        stmt.bindLong(9, entity.getRetry());
+        stmt.bindString(10, entity.getMd5());
     }
 
     /** @inheritdoc */
@@ -91,12 +96,15 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     public Block readEntity(Cursor cursor, int offset) {
         Block entity = new Block( //
             cursor.getInt(offset + 0), // id
-            cursor.getString(offset + 1), // uri
-            cursor.getString(offset + 2), // state
-            cursor.getInt(offset + 3), // offset
-            cursor.getInt(offset + 4), // network
-            cursor.getInt(offset + 5), // end
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // md5
+            cursor.getString(offset + 1), // url
+            cursor.getInt(offset + 2), // fileOffset
+            cursor.getInt(offset + 3), // downloadOffset
+            cursor.getInt(offset + 4), // read
+            cursor.getInt(offset + 5), // length
+            cursor.getString(offset + 6), // file
+            cursor.getInt(offset + 7), // network
+            cursor.getInt(offset + 8), // retry
+            cursor.getString(offset + 9) // md5
         );
         return entity;
     }
@@ -105,12 +113,15 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     @Override
     public void readEntity(Cursor cursor, Block entity, int offset) {
         entity.setId(cursor.getInt(offset + 0));
-        entity.setUri(cursor.getString(offset + 1));
-        entity.setState(cursor.getString(offset + 2));
-        entity.setOffset(cursor.getInt(offset + 3));
-        entity.setNetwork(cursor.getInt(offset + 4));
-        entity.setEnd(cursor.getInt(offset + 5));
-        entity.setMd5(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setUrl(cursor.getString(offset + 1));
+        entity.setFileOffset(cursor.getInt(offset + 2));
+        entity.setDownloadOffset(cursor.getInt(offset + 3));
+        entity.setRead(cursor.getInt(offset + 4));
+        entity.setLength(cursor.getInt(offset + 5));
+        entity.setFile(cursor.getString(offset + 6));
+        entity.setNetwork(cursor.getInt(offset + 7));
+        entity.setRetry(cursor.getInt(offset + 8));
+        entity.setMd5(cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */

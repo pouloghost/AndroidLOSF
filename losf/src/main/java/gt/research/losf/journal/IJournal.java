@@ -14,15 +14,13 @@ public interface IJournal {
 
     int addBlock(IBlockInfo info);
 
-    int addBlock(int id, String uri, int offset, int network, int end, String md5);
+    int addBlock(int id, String url, int fileOffset, int downloadOffset,
+                 int read, int length, String file,
+                 int network, int retry, String md5);
 
     int deleteBlock(int id);
 
     int deleteBlock(String uri);
-
-    boolean isFull();
-
-    int getSize();
 
     IBlockInfo getBlock(int id);
 

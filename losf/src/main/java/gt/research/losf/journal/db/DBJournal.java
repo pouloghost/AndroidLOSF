@@ -34,8 +34,11 @@ public class DBJournal implements IJournal {
     }
 
     @Override
-    public int addBlock(int id, String uri, int offset, int network, int end, String md5) {
-        return addBlock(new DBBlockInfo(uri, id, offset, network, end, md5));
+    public int addBlock(int id, String url, int fileOffset,
+                        int downloadOffset, int read, int length,
+                        String file, int network, int retry, String md5) {
+        return addBlock(new DBBlockInfo(id, url, fileOffset,
+                downloadOffset, read, length, file, network, retry, md5));
     }
 
     @Override
@@ -45,20 +48,10 @@ public class DBJournal implements IJournal {
     }
 
     @Override
-    public int deleteBlock(String uri) {
-        mDao.queryBuilder().where(BlockDao.Properties.Uri.eq(uri)).
+    public int deleteBlock(String url) {
+        mDao.queryBuilder().where(BlockDao.Properties.Url.eq(url)).
                 buildDelete().executeDeleteWithoutDetachingEntities();
         return RESULT_SUCCESS;
-    }
-
-    @Override
-    public boolean isFull() {
-        return false;
-    }
-
-    @Override
-    public int getSize() {
-        return -1;
     }
 
     @Override
@@ -68,8 +61,8 @@ public class DBJournal implements IJournal {
     }
 
     @Override
-    public List<IBlockInfo> getBlocks(String uri) {
-        List<Block> blocks = mDao.queryBuilder().where(BlockDao.Properties.Uri.eq(uri)).
+    public List<IBlockInfo> getBlocks(String url) {
+        List<Block> blocks = mDao.queryBuilder().where(BlockDao.Properties.Url.eq(url)).
                 build().list();
         if (null == blocks || blocks.isEmpty()) {
             return null;

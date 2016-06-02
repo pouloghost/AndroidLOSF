@@ -8,12 +8,16 @@ public class Block {
 
     private int id;
     /** Not-null value. */
-    private String uri;
+    private String url;
+    private int fileOffset;
+    private int downloadOffset;
+    private int read;
+    private int length;
     /** Not-null value. */
-    private String state;
-    private int offset;
+    private String file;
     private int network;
-    private int end;
+    private int retry;
+    /** Not-null value. */
     private String md5;
 
     public Block() {
@@ -23,13 +27,16 @@ public class Block {
         this.id = id;
     }
 
-    public Block(int id, String uri, String state, int offset, int network, int end, String md5) {
+    public Block(int id, String url, int fileOffset, int downloadOffset, int read, int length, String file, int network, int retry, String md5) {
         this.id = id;
-        this.uri = uri;
-        this.state = state;
-        this.offset = offset;
+        this.url = url;
+        this.fileOffset = fileOffset;
+        this.downloadOffset = downloadOffset;
+        this.read = read;
+        this.length = length;
+        this.file = file;
         this.network = network;
-        this.end = end;
+        this.retry = retry;
         this.md5 = md5;
     }
 
@@ -42,31 +49,55 @@ public class Block {
     }
 
     /** Not-null value. */
-    public String getUri() {
-        return uri;
+    public String getUrl() {
+        return url;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getFileOffset() {
+        return fileOffset;
+    }
+
+    public void setFileOffset(int fileOffset) {
+        this.fileOffset = fileOffset;
+    }
+
+    public int getDownloadOffset() {
+        return downloadOffset;
+    }
+
+    public void setDownloadOffset(int downloadOffset) {
+        this.downloadOffset = downloadOffset;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 
     /** Not-null value. */
-    public String getState() {
-        return state;
+    public String getFile() {
+        return file;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setFile(String file) {
+        this.file = file;
     }
 
     public int getNetwork() {
@@ -77,18 +108,20 @@ public class Block {
         this.network = network;
     }
 
-    public int getEnd() {
-        return end;
+    public int getRetry() {
+        return retry;
     }
 
-    public void setEnd(int end) {
-        this.end = end;
+    public void setRetry(int retry) {
+        this.retry = retry;
     }
 
+    /** Not-null value. */
     public String getMd5() {
         return md5;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setMd5(String md5) {
         this.md5 = md5;
     }

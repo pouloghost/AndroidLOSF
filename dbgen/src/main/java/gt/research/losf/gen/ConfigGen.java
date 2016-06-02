@@ -54,7 +54,7 @@ public class ConfigGen {
 
     private static FileConfig initTaskConfig() {
         FileConfig fileConfig = new FileConfig();
-        fileConfig.network = 100;
+        fileConfig.network = 0;
         fileConfig.url = "$url";
         fileConfig.retry = 2;
 

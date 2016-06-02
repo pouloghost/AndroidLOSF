@@ -20,11 +20,27 @@ public interface IJournal {
 
     int deleteBlock(int id);
 
-    int deleteBlock(String uri);
+    int deleteBlock(String url);
 
     IBlockInfo getBlock(int id);
 
-    List<IBlockInfo> getBlocks(String uri);
+    List<IBlockInfo> getBlocks(String url);
 
     List<IBlockInfo> getAllBlocks();
+
+    int addFile(IFileInfo info);
+
+    int addFile(int id, String file, String url, String md5, int state);
+
+    int deleteFile(int id);
+
+    int deleteFile(String url);
+
+    IFileInfo getFile(int id);
+
+    IFileInfo getFile(String url);
+
+    List<IFileInfo> getAllFiles();
+
+    IFileInfo readFileBlocks(IFileInfo info);
 }

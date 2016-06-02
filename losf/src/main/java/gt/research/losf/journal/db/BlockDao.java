@@ -24,15 +24,16 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, int.class, "id", true, "ID");
-        public final static Property Url = new Property(1, String.class, "url", false, "URL");
-        public final static Property FileOffset = new Property(2, int.class, "fileOffset", false, "FILE_OFFSET");
-        public final static Property DownloadOffset = new Property(3, int.class, "downloadOffset", false, "DOWNLOAD_OFFSET");
-        public final static Property Read = new Property(4, int.class, "read", false, "READ");
-        public final static Property Length = new Property(5, int.class, "length", false, "LENGTH");
-        public final static Property File = new Property(6, String.class, "file", false, "FILE");
-        public final static Property Network = new Property(7, int.class, "network", false, "NETWORK");
-        public final static Property Retry = new Property(8, int.class, "retry", false, "RETRY");
-        public final static Property Md5 = new Property(9, String.class, "md5", false, "MD5");
+        public final static Property FileId = new Property(1, int.class, "fileId", false, "FILE_ID");
+        public final static Property Url = new Property(2, String.class, "url", false, "URL");
+        public final static Property FileOffset = new Property(3, int.class, "fileOffset", false, "FILE_OFFSET");
+        public final static Property DownloadOffset = new Property(4, int.class, "downloadOffset", false, "DOWNLOAD_OFFSET");
+        public final static Property Read = new Property(5, int.class, "read", false, "READ");
+        public final static Property Length = new Property(6, int.class, "length", false, "LENGTH");
+        public final static Property File = new Property(7, String.class, "file", false, "FILE");
+        public final static Property Network = new Property(8, int.class, "network", false, "NETWORK");
+        public final static Property Retry = new Property(9, int.class, "retry", false, "RETRY");
+        public final static Property Md5 = new Property(10, String.class, "md5", false, "MD5");
     };
 
 
@@ -49,15 +50,16 @@ public class BlockDao extends AbstractDao<Block, Integer> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BLOCK\" (" + //
                 "\"ID\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
-                "\"URL\" TEXT NOT NULL ," + // 1: url
-                "\"FILE_OFFSET\" INTEGER NOT NULL ," + // 2: fileOffset
-                "\"DOWNLOAD_OFFSET\" INTEGER NOT NULL ," + // 3: downloadOffset
-                "\"READ\" INTEGER NOT NULL ," + // 4: read
-                "\"LENGTH\" INTEGER NOT NULL ," + // 5: length
-                "\"FILE\" TEXT NOT NULL ," + // 6: file
-                "\"NETWORK\" INTEGER NOT NULL ," + // 7: network
-                "\"RETRY\" INTEGER NOT NULL ," + // 8: retry
-                "\"MD5\" TEXT NOT NULL );"); // 9: md5
+                "\"FILE_ID\" INTEGER NOT NULL ," + // 1: fileId
+                "\"URL\" TEXT NOT NULL ," + // 2: url
+                "\"FILE_OFFSET\" INTEGER NOT NULL ," + // 3: fileOffset
+                "\"DOWNLOAD_OFFSET\" INTEGER NOT NULL ," + // 4: downloadOffset
+                "\"READ\" INTEGER NOT NULL ," + // 5: read
+                "\"LENGTH\" INTEGER NOT NULL ," + // 6: length
+                "\"FILE\" TEXT NOT NULL ," + // 7: file
+                "\"NETWORK\" INTEGER NOT NULL ," + // 8: network
+                "\"RETRY\" INTEGER NOT NULL ," + // 9: retry
+                "\"MD5\" TEXT NOT NULL );"); // 10: md5
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_BLOCK_ID ON BLOCK" +
                 " (\"ID\");");
@@ -74,15 +76,16 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     protected void bindValues(SQLiteStatement stmt, Block entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
-        stmt.bindString(2, entity.getUrl());
-        stmt.bindLong(3, entity.getFileOffset());
-        stmt.bindLong(4, entity.getDownloadOffset());
-        stmt.bindLong(5, entity.getRead());
-        stmt.bindLong(6, entity.getLength());
-        stmt.bindString(7, entity.getFile());
-        stmt.bindLong(8, entity.getNetwork());
-        stmt.bindLong(9, entity.getRetry());
-        stmt.bindString(10, entity.getMd5());
+        stmt.bindLong(2, entity.getFileId());
+        stmt.bindString(3, entity.getUrl());
+        stmt.bindLong(4, entity.getFileOffset());
+        stmt.bindLong(5, entity.getDownloadOffset());
+        stmt.bindLong(6, entity.getRead());
+        stmt.bindLong(7, entity.getLength());
+        stmt.bindString(8, entity.getFile());
+        stmt.bindLong(9, entity.getNetwork());
+        stmt.bindLong(10, entity.getRetry());
+        stmt.bindString(11, entity.getMd5());
     }
 
     /** @inheritdoc */
@@ -96,15 +99,16 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     public Block readEntity(Cursor cursor, int offset) {
         Block entity = new Block( //
             cursor.getInt(offset + 0), // id
-            cursor.getString(offset + 1), // url
-            cursor.getInt(offset + 2), // fileOffset
-            cursor.getInt(offset + 3), // downloadOffset
-            cursor.getInt(offset + 4), // read
-            cursor.getInt(offset + 5), // length
-            cursor.getString(offset + 6), // file
-            cursor.getInt(offset + 7), // network
-            cursor.getInt(offset + 8), // retry
-            cursor.getString(offset + 9) // md5
+            cursor.getInt(offset + 1), // fileId
+            cursor.getString(offset + 2), // url
+            cursor.getInt(offset + 3), // fileOffset
+            cursor.getInt(offset + 4), // downloadOffset
+            cursor.getInt(offset + 5), // read
+            cursor.getInt(offset + 6), // length
+            cursor.getString(offset + 7), // file
+            cursor.getInt(offset + 8), // network
+            cursor.getInt(offset + 9), // retry
+            cursor.getString(offset + 10) // md5
         );
         return entity;
     }
@@ -113,15 +117,16 @@ public class BlockDao extends AbstractDao<Block, Integer> {
     @Override
     public void readEntity(Cursor cursor, Block entity, int offset) {
         entity.setId(cursor.getInt(offset + 0));
-        entity.setUrl(cursor.getString(offset + 1));
-        entity.setFileOffset(cursor.getInt(offset + 2));
-        entity.setDownloadOffset(cursor.getInt(offset + 3));
-        entity.setRead(cursor.getInt(offset + 4));
-        entity.setLength(cursor.getInt(offset + 5));
-        entity.setFile(cursor.getString(offset + 6));
-        entity.setNetwork(cursor.getInt(offset + 7));
-        entity.setRetry(cursor.getInt(offset + 8));
-        entity.setMd5(cursor.getString(offset + 9));
+        entity.setFileId(cursor.getInt(offset + 1));
+        entity.setUrl(cursor.getString(offset + 2));
+        entity.setFileOffset(cursor.getInt(offset + 3));
+        entity.setDownloadOffset(cursor.getInt(offset + 4));
+        entity.setRead(cursor.getInt(offset + 5));
+        entity.setLength(cursor.getInt(offset + 6));
+        entity.setFile(cursor.getString(offset + 7));
+        entity.setNetwork(cursor.getInt(offset + 8));
+        entity.setRetry(cursor.getInt(offset + 9));
+        entity.setMd5(cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */

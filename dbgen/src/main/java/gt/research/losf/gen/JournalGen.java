@@ -11,13 +11,24 @@ public class JournalGen {
         Schema schema = new Schema(1, "gt.research.losf.journal.db");
 
         addBlock(schema);
+        addFile(schema);
 
         new DaoGenerator().generateAll(schema, sDbRoot);
+    }
+
+    private static void addFile(Schema schema) {
+        Entity file = schema.addEntity("File");
+        file.addIntProperty("id").notNull().primaryKey().index();
+        file.addStringProperty("file").notNull();
+        file.addStringProperty("url").notNull();
+        file.addStringProperty("md5").notNull();
+        file.addIntProperty("state").notNull();
     }
 
     private static void addBlock(Schema schema) {
         Entity block = schema.addEntity("Block");
         block.addIntProperty("id").notNull().primaryKey().index();
+        block.addIntProperty("fileId").notNull();
         block.addStringProperty("url").notNull();
         block.addIntProperty("fileOffset").notNull();
         block.addIntProperty("downloadOffset").notNull();

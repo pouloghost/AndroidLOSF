@@ -7,6 +7,7 @@ package gt.research.losf.journal.db;
 public class Block {
 
     private int id;
+    private int fileId;
     /** Not-null value. */
     private String url;
     private int fileOffset;
@@ -27,8 +28,9 @@ public class Block {
         this.id = id;
     }
 
-    public Block(int id, String url, int fileOffset, int downloadOffset, int read, int length, String file, int network, int retry, String md5) {
+    public Block(int id, int fileId, String url, int fileOffset, int downloadOffset, int read, int length, String file, int network, int retry, String md5) {
         this.id = id;
+        this.fileId = fileId;
         this.url = url;
         this.fileOffset = fileOffset;
         this.downloadOffset = downloadOffset;
@@ -46,6 +48,14 @@ public class Block {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 
     /** Not-null value. */

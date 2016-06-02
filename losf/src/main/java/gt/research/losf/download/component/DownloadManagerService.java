@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import gt.research.losf.download.control.ControlStateCenter;
-import gt.research.losf.download.task.FileInfo;
 import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IJournal;
 import gt.research.losf.journal.JournalMaker;

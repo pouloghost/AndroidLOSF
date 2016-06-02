@@ -3,7 +3,7 @@ package gt.research.losf.download.control;
 import java.util.HashSet;
 import java.util.Set;
 
-import gt.research.losf.download.task.FileInfo;
+import gt.research.losf.journal.IFileInfo;
 
 /**
  * Created by GT on 2016/5/25.
@@ -26,7 +26,7 @@ public class ControlStateCenter {
     }
 
     private int mNetwork;
-    private final Set<FileInfo> mPendingStartFiles = new HashSet<>(10);
+    private final Set<IFileInfo> mPendingStartFiles = new HashSet<>(10);
     private final Set<Integer> mPendingPauseBlocks = new HashSet<>(100);
     private final Set<Integer> mPendingCancelBlocks = new HashSet<>(100);
 
@@ -34,19 +34,19 @@ public class ControlStateCenter {
         return mNetwork;
     }
 
-    public void start(FileInfo info) {
+    public void start(IFileInfo info) {
         synchronized (mPendingStartFiles) {
             mPendingStartFiles.add(info);
         }
     }
 
-    public Set<FileInfo> getPendingStarts() {
+    public Set<IFileInfo> getPendingStarts() {
         synchronized (mPendingStartFiles) {
             return new HashSet<>(mPendingStartFiles);
         }
     }
 
-    public void started(Set<FileInfo> started) {
+    public void started(Set<IFileInfo> started) {
         synchronized (mPendingStartFiles) {
             mPendingCancelBlocks.removeAll(started);
         }

@@ -27,7 +27,7 @@
 //    private char mState;
 //    private String mUri;
 //    private int mBlockId;
-//    private int mOffset;//offset of this block in file (next reading start)
+//    private int mOffset;//offset of this block in file (next reading startFile)
 //    private int mNetworkLevel;
 //    private int mEnd;
 //    private String mMd5;

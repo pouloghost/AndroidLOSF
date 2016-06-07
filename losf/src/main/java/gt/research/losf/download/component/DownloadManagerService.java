@@ -33,14 +33,17 @@ public class DownloadManagerService extends Service {
 
     public static final String KEY_FILE_NAME = "fileName";
 
-    private ExecutorService mExecutorPool;
+    private ExecutorService mDownloadExecutor;
+    private ExecutorService mInitExecutor;
+
     private IJournal mJournal;
 
     @Override
     public void onCreate() {
         mJournal = JournalMaker.get();
 
-        mExecutorPool = new ThreadPoolExecutor(2, 4, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        mDownloadExecutor = new ThreadPoolExecutor(2, 4, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        mInitExecutor = new ThreadPoolExecutor(1, 1, 1000, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
         resumeDownloads();
     }
@@ -50,7 +53,7 @@ public class DownloadManagerService extends Service {
         for (IBlockInfo block : blocks) {
             if (block.getRead() != block.getLength() ||
                     (!TextUtils.isEmpty(block.getMd5()) && !MD5_SUCCESS.equals(block.getMd5()))) {
-                mExecutorPool.execute(new DownloadRunnable(block));
+                mDownloadExecutor.execute(new DownloadRunnable(block));
             }
         }
     }
@@ -60,25 +63,31 @@ public class DownloadManagerService extends Service {
         String action = intent.getAction();
         Bundle extra = intent.getExtras();
         if (ACTION_NEW.equals(action)) {
-            doAddTask(extra);
+            doAddBlock(extra);
+            doAddFile(extra);
         } else if (ACTION_PAUSE.equals(action)) {
-            doPauseTask(extra);
+            doPauseFile(extra);
         } else if (ACTION_CANCEL.equals(action)) {
-            doCancelTask(extra);
+            doCancelFile(extra);
         }
         return START_NOT_STICKY;
     }
 
-    private void doAddTask(Bundle extra) {
-        mExecutorPool.execute(new InitRunnable());
-        Toast.makeText(DownloadManagerService.this, "add", Toast.LENGTH_SHORT).show();
+    private void doAddBlock(Bundle extra) {
+        mInitExecutor.execute(new InitBlockRunnable());
+        Toast.makeText(DownloadManagerService.this, "add block", Toast.LENGTH_SHORT).show();
     }
 
-    private void doPauseTask(Bundle extra) {
+    private void doAddFile(Bundle extra) {
+        mInitExecutor.execute(new InitFileRunnable());
+        Toast.makeText(DownloadManagerService.this, "add file", Toast.LENGTH_SHORT).show();
+    }
+
+    private void doPauseFile(Bundle extra) {
 
     }
 
-    private void doCancelTask(Bundle extra) {
+    private void doCancelFile(Bundle extra) {
 
     }
 
@@ -88,19 +97,34 @@ public class DownloadManagerService extends Service {
         return null;
     }
 
-    private class InitRunnable implements Runnable {
+    private class InitFileRunnable implements Runnable {
         @Override
         public void run() {
             ControlStateCenter state = ControlStateCenter.getInstance();
-            Set<IFileInfo> fileSet = state.getPendingStarts();
+            Set<IFileInfo> fileSet = state.getPendingStartFiles();
             for (IFileInfo file : fileSet) {
                 List<IBlockInfo> blocks = file.getBlocks();
                 for (IBlockInfo blockInfo : blocks) {
                     mJournal.addBlock(blockInfo);
-                    mExecutorPool.execute(new DownloadRunnable(blockInfo));
+                    mDownloadExecutor.execute(new DownloadRunnable(blockInfo));
                 }
-                state.start(file);
             }
+            state.fileStarted(fileSet);
+        }
+    }
+
+    private class InitBlockRunnable implements Runnable {
+        @Override
+        public void run() {
+            ControlStateCenter state = ControlStateCenter.getInstance();
+            Set<Integer> ids = state.getPendingStartBlocks();
+            for (Integer id : ids) {
+                IBlockInfo blockInfo = mJournal.getBlock(id);
+                if (null != blockInfo) {
+                    mDownloadExecutor.execute(new DownloadRunnable(blockInfo));
+                }
+            }
+            state.blockStarted(ids);
         }
     }
 }

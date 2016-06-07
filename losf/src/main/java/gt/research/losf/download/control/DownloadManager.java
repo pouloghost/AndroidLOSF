@@ -14,12 +14,21 @@ import static gt.research.losf.download.component.DownloadManagerService.KEY_FIL
  */
 public class DownloadManager {
     public static void start(Context context, IFileInfo fileInfo) {
-        ControlStateCenter.getInstance().start(fileInfo);
+        ControlStateCenter.getInstance().startFile(fileInfo);
+        startService(context, fileInfo.getFile());
+    }
+
+    private static void startService(Context context, String file) {
         Intent intent = new Intent(ACTION_NEW);
         intent.setPackage("gt.research.losf");
         intent.setClass(context, DownloadManagerService.class);
-        intent.putExtra(KEY_FILE_NAME, fileInfo.getFile());
+        intent.putExtra(KEY_FILE_NAME, file);
         context.startService(intent);
+    }
+
+    public static void start(Context context, int... ids) {
+        ControlStateCenter.getInstance().startBlocks(ids);
+        startService(context, "");
     }
 
     public static void pause(Context context, int... ids) {

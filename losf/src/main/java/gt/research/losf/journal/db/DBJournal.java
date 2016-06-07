@@ -36,10 +36,10 @@ public class DBJournal implements IJournal {
     }
 
     @Override
-    public int addBlock(int id, String url, int fileOffset,
+    public int addBlock(int id, int fileId, String url, int fileOffset,
                         int downloadOffset, int read, int length,
                         String file, int network, int retry, String md5) {
-        return addBlock(new DBBlockInfo(id, url, fileOffset,
+        return addBlock(new DBBlockInfo(id, fileId, url, fileOffset,
                 downloadOffset, read, length, file, network, retry, md5));
     }
 

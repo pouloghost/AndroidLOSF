@@ -20,14 +20,15 @@ public class DownloadRunnable implements Runnable {
     @Override
     public void run() {
         ControlStateCenter state = ControlStateCenter.getInstance();
-        if (state.needPause(mBlock.getBlockId())) {
-            state.paused(mBlock.getBlockId());
+        if (state.needPause(mBlock.getId())) {
+            state.paused(mBlock.getId());
             return;
         }
-        if (state.needCancel(mBlock.getBlockId())) {
-            mJournal.deleteBlock(mBlock.getBlockId());
+        if (state.needCancel(mBlock.getId())) {
+            mJournal.deleteBlock(mBlock.getId());
+            state.canceled(mBlock.getId());
             return;
         }
-        
+
     }
 }

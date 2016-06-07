@@ -8,11 +8,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import gt.research.losf.FileConfig;
+import gt.research.losf.IFileConfigReader;
 
 /**
  * Created by GT on 2016/5/25.
  */
-public class FileTaskConfigReader implements ITaskConfigReader {
+public class FileFileConfigReader implements IFileConfigReader {
     private static final String sConfigPath = "D:\\Workbench\\AndroidLOSF\\126.config";
 
     @Override

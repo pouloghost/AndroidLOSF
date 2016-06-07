@@ -10,6 +10,8 @@ public interface IFileInfo {
     int STATE_DOWNLOADING = 1;
     int STATE_FINISH = 2;
     int STATE_FAIL = 3;
+    // clear md5 if verification is ok
+    String MD5_SUCCESS = "s";
 
     int getId();
 

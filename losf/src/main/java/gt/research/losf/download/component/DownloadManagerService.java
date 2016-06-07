@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Toast;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 import gt.research.losf.download.control.ControlStateCenter;
 import gt.research.losf.journal.IBlockInfo;
+import gt.research.losf.journal.IFileInfo;
 import gt.research.losf.journal.IJournal;
 import gt.research.losf.journal.JournalMaker;
 
-import static gt.research.losf.journal.IBlockInfo.STATE_NEW;
-import static gt.research.losf.journal.IBlockInfo.STATE_PROGRESS;
+import static gt.research.losf.journal.IFileInfo.MD5_SUCCESS;
 
 /**
  * Created by GT on 2016/5/25.
@@ -48,8 +48,8 @@ public class DownloadManagerService extends Service {
     private void resumeDownloads() {
         List<IBlockInfo> blocks = mJournal.getAllBlocks();
         for (IBlockInfo block : blocks) {
-            if (STATE_NEW == block.getBlockState() ||
-                    STATE_PROGRESS == block.getBlockState()) {
+            if (block.getRead() != block.getLength() ||
+                    (!TextUtils.isEmpty(block.getMd5()) && !MD5_SUCCESS.equals(block.getMd5()))) {
                 mExecutorPool.execute(new DownloadRunnable(block));
             }
         }
@@ -92,9 +92,9 @@ public class DownloadManagerService extends Service {
         @Override
         public void run() {
             ControlStateCenter state = ControlStateCenter.getInstance();
-            Set<FileInfo> fileSet = state.getPendingStarts();
-            for (FileInfo file : fileSet) {
-                Collection<IBlockInfo> blocks = file.getBlockInfo();
+            Set<IFileInfo> fileSet = state.getPendingStarts();
+            for (IFileInfo file : fileSet) {
+                List<IBlockInfo> blocks = file.getBlocks();
                 for (IBlockInfo blockInfo : blocks) {
                     mJournal.addBlock(blockInfo);
                     mExecutorPool.execute(new DownloadRunnable(blockInfo));

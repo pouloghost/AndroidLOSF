@@ -14,7 +14,7 @@ public interface IJournal {
 
     int addBlock(IBlockInfo info);
 
-    int addBlock(int id, String url, int fileOffset, int downloadOffset,
+    int addBlock(int id, int fileId, String url, int fileOffset, int downloadOffset,
                  int read, int length, String file,
                  int network, int retry, String md5);
 

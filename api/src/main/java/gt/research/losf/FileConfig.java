@@ -10,5 +10,7 @@ public class FileConfig {
     // total md5, verify after download finish
     public String md5;
 
+    public long length;
+
     public BlockConfig[] blocks;
 }

@@ -23,6 +23,7 @@ public class JournalGen {
         file.addStringProperty("url").notNull();
         file.addStringProperty("md5").notNull();
         file.addIntProperty("state").notNull();
+        file.addLongProperty("length").notNull();
         file.addStringProperty("cookie");
         file.addStringProperty("etag");
     }

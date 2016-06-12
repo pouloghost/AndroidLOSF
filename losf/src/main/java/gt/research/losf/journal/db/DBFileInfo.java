@@ -18,11 +18,12 @@ public class DBFileInfo extends File implements IFileInfo {
 
     public DBFileInfo(File file) {
         super(file.getId(), file.getFile(), file.getUrl(),
-                file.getMd5(), file.getState());
+                file.getMd5(), file.getState(),
+                file.getLength(), file.getCookie(), file.getEtag());
     }
 
-    public DBFileInfo(int id, String file, String url, String md5, int state) {
-        super(id, file, url, md5, state);
+    public DBFileInfo(int id, String file, String url, String md5, int state, long length, String cookie, String etag) {
+        super(id, file, url, md5, state, length, cookie, etag);
     }
 
     @Override

@@ -33,6 +33,8 @@ public interface IFileInfo {
 
     void setEtag(String etag);
 
+    long getLength();
+
     List<IBlockInfo> getBlocks();
 
     void addBlock(IBlockInfo block);

@@ -59,9 +59,9 @@ public class ConfigGen {
         fileConfig.retry = 2;
 
         File file = new File(sFilePath);
-        long length = file.length();
-        int blockCount = (int) (length / sBlockSize);
-        if (0 != length % sBlockSize) {
+        fileConfig.length = file.length();
+        int blockCount = (int) (fileConfig.length / sBlockSize);
+        if (0 != fileConfig.length % sBlockSize) {
             ++blockCount;
         }
 

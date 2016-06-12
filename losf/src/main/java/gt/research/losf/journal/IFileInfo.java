@@ -25,6 +25,14 @@ public interface IFileInfo {
 
     void setState(int state);
 
+    String getCookie();
+
+    void setCookie(String cookie);
+
+    String getEtag();
+
+    void setEtag(String etag);
+
     List<IBlockInfo> getBlocks();
 
     void addBlock(IBlockInfo block);

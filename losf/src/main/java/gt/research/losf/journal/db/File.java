@@ -14,6 +14,8 @@ public class File {
     /** Not-null value. */
     private String md5;
     private int state;
+    private String cookie;
+    private String etag;
 
     public File() {
     }
@@ -22,12 +24,14 @@ public class File {
         this.id = id;
     }
 
-    public File(int id, String file, String url, String md5, int state) {
+    public File(int id, String file, String url, String md5, int state, String cookie, String etag) {
         this.id = id;
         this.file = file;
         this.url = url;
         this.md5 = md5;
         this.state = state;
+        this.cookie = cookie;
+        this.etag = etag;
     }
 
     public int getId() {
@@ -74,6 +78,22 @@ public class File {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
+    }
+
+    public String getEtag() {
+        return etag;
+    }
+
+    public void setEtag(String etag) {
+        this.etag = etag;
     }
 
 }

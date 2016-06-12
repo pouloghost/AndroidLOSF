@@ -28,6 +28,8 @@ public class FileDao extends AbstractDao<File, Integer> {
         public final static Property Url = new Property(2, String.class, "url", false, "URL");
         public final static Property Md5 = new Property(3, String.class, "md5", false, "MD5");
         public final static Property State = new Property(4, int.class, "state", false, "STATE");
+        public final static Property Cookie = new Property(5, String.class, "cookie", false, "COOKIE");
+        public final static Property Etag = new Property(6, String.class, "etag", false, "ETAG");
     };
 
 
@@ -47,7 +49,9 @@ public class FileDao extends AbstractDao<File, Integer> {
                 "\"FILE\" TEXT NOT NULL ," + // 1: file
                 "\"URL\" TEXT NOT NULL ," + // 2: url
                 "\"MD5\" TEXT NOT NULL ," + // 3: md5
-                "\"STATE\" INTEGER NOT NULL );"); // 4: state
+                "\"STATE\" INTEGER NOT NULL ," + // 4: state
+                "\"COOKIE\" TEXT," + // 5: cookie
+                "\"ETAG\" TEXT);"); // 6: etag
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_FILE_ID ON FILE" +
                 " (\"ID\");");
@@ -68,6 +72,16 @@ public class FileDao extends AbstractDao<File, Integer> {
         stmt.bindString(3, entity.getUrl());
         stmt.bindString(4, entity.getMd5());
         stmt.bindLong(5, entity.getState());
+ 
+        String cookie = entity.getCookie();
+        if (cookie != null) {
+            stmt.bindString(6, cookie);
+        }
+ 
+        String etag = entity.getEtag();
+        if (etag != null) {
+            stmt.bindString(7, etag);
+        }
     }
 
     /** @inheritdoc */
@@ -84,7 +98,9 @@ public class FileDao extends AbstractDao<File, Integer> {
             cursor.getString(offset + 1), // file
             cursor.getString(offset + 2), // url
             cursor.getString(offset + 3), // md5
-            cursor.getInt(offset + 4) // state
+            cursor.getInt(offset + 4), // state
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // cookie
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // etag
         );
         return entity;
     }
@@ -97,6 +113,8 @@ public class FileDao extends AbstractDao<File, Integer> {
         entity.setUrl(cursor.getString(offset + 2));
         entity.setMd5(cursor.getString(offset + 3));
         entity.setState(cursor.getInt(offset + 4));
+        entity.setCookie(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setEtag(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */

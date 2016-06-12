@@ -23,6 +23,8 @@ public class JournalGen {
         file.addStringProperty("url").notNull();
         file.addStringProperty("md5").notNull();
         file.addIntProperty("state").notNull();
+        file.addStringProperty("cookie");
+        file.addStringProperty("etag");
     }
 
     private static void addBlock(Schema schema) {

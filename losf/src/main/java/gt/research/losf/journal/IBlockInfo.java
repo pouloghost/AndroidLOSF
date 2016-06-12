@@ -18,7 +18,10 @@ public interface IBlockInfo {
 
     int getLength();
 
+    // the file to be stored
     String getFile();
+
+    int getFileId();
 
     int getNetwork();
 

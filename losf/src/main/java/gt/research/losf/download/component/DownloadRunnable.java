@@ -107,6 +107,8 @@ public class DownloadRunnable implements Runnable {
                 }
                 DownloadException.md5();
             }
+            mBlock.setMd5(IFileInfo.MD5_SUCCESS);
+            mJournal.addBlock(mBlock);
             // TODO: 2016/6/13 callback success
         } catch (DownloadControlException | DownloadException e) {
 // TODO: 2016/6/12 call callback

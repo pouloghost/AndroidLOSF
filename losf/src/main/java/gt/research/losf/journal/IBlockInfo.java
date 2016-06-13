@@ -30,4 +30,6 @@ public interface IBlockInfo {
     void setRetry(int retry);
 
     String getMd5();
+
+    String setMd5(String md5);
 }

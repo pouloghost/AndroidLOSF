@@ -5,8 +5,10 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.text.TextUtils;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -22,12 +24,14 @@ import java.util.regex.Pattern;
 
 import gt.research.losf.LosfApplication;
 import gt.research.losf.download.control.ControlStateCenter;
+import gt.research.losf.download.control.DownloadManager;
 import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IFileInfo;
 import gt.research.losf.journal.IJournal;
 import gt.research.losf.journal.JournalMaker;
 import gt.research.losf.util.LogUtils;
 
+import static gt.research.losf.MD5Utils.getMd5String;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_PARTIAL;
 
@@ -78,26 +82,59 @@ public class DownloadRunnable implements Runnable {
     @Override
     public void run() {
         ControlStateCenter state = ControlStateCenter.getInstance();
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
         try {
             mTmp = ByteArrayPool.getInstance().get();
             acquireLock();
             checkStatus(state);
-            HttpURLConnection connection = startConnection();
-            if (null == connection) {
-                return;
-            }
             ensureFile();
+            connection = startConnection();
+            inputStream = connection.getInputStream();
             while (mBlock.getRead() < mBlock.getLength()) {
                 checkStatus(state);
+                downloadChuck(inputStream);
             }
+            if (mBlock.getRead() != mBlock.getLength()) {
+                DownloadException.error();
+            }
+            if (!TextUtils.isEmpty(mBlock.getMd5()) && !mBlock.getMd5().equals(getMd5String(mDigest))) {
+                if (mBlock.getRetry() > 0) {
+                    mBlock.setRead(0);
+                    mBlock.setRetry(mBlock.getRetry() - 1);
+                    mJournal.addBlock(mBlock);
+                    DownloadManager.start(LosfApplication.getInstance(), mBlock.getId());
+                }
+                DownloadException.md5();
+            }
+            // TODO: 2016/6/13 callback success
         } catch (DownloadControlException | DownloadException e) {
 // TODO: 2016/6/12 call callback
+        } catch (IOException e) {
+            LogUtils.exception(this, e);
         } finally {
             ByteArrayPool.getInstance().offer(mTmp);
             if (null != mWakeLock) {
                 mWakeLock.release();
             }
+            if (null != connection) {
+                connection.disconnect();
+            }
+            closeQuitely(mSaveFile);
+            closeQuitely(inputStream);
         }
+    }
+
+    private void downloadChuck(InputStream inputStream) throws IOException, DownloadException {
+        int len = inputStream.read(mTmp);
+        if (-1 == len) {
+            DownloadException.noData();
+        }
+        mDigest.update(mTmp);
+        mSaveFile.write(mTmp, 0, len);
+        mBlock.setRead(mBlock.getRead() + len);
+        mJournal.addBlock(mBlock);
+        mBlock = mJournal.getBlock(mBlock.getId());
     }
 
     private void ensureFile() throws DownloadException {
@@ -134,7 +171,7 @@ public class DownloadRunnable implements Runnable {
         }
     }
 
-    private HttpURLConnection startConnection() {
+    private HttpURLConnection startConnection() throws DownloadException {
         try {
             URL url = new URL(mBlock.getUrl());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -144,8 +181,9 @@ public class DownloadRunnable implements Runnable {
             addRequestHeaders(connection);
             handleResponse(connection);
             return connection;
-        } catch (IOException | DownloadException e) {
+        } catch (Exception e) {
             LogUtils.exception(this, e);
+            DownloadException.error();
         }
         return null;
     }
@@ -252,6 +290,17 @@ public class DownloadRunnable implements Runnable {
         }
     }
 
+    private static void closeQuitely(Closeable closeable) {
+        if (null == closeable) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static class MockMessageDigest extends MessageDigest {
         private static byte[] sEmptyBytes = new byte[0];
 
@@ -314,6 +363,8 @@ public class DownloadRunnable implements Runnable {
         public static final int STATUS_ERROR = 1;
         public static final int STATUS_WRONG_CODE = 2;
         public static final int STATUS_NO_FILE = 3;
+        public static final int STATUS_NO_DATA = 4;
+        public static final int STATUS_MD5_ERROR = 5;
 
         public int status;
 
@@ -331,6 +382,14 @@ public class DownloadRunnable implements Runnable {
 
         public static void noFile() throws DownloadException {
             throw new DownloadException(STATUS_NO_FILE);
+        }
+
+        public static void noData() throws DownloadException {
+            throw new DownloadException(STATUS_NO_DATA);
+        }
+
+        public static void md5() throws DownloadException {
+            throw new DownloadException(STATUS_MD5_ERROR);
         }
     }
 }

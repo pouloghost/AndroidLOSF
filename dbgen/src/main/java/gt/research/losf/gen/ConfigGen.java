@@ -13,6 +13,8 @@ import java.security.NoSuchAlgorithmException;
 import gt.research.losf.BlockConfig;
 import gt.research.losf.FileConfig;
 
+import static gt.research.losf.MD5Utils.getMd5String;
+
 /**
  * Created by GT on 2016/5/25.
  */
@@ -109,13 +111,5 @@ public class ConfigGen {
                 }
             }
         }
-    }
-
-    private static String getMd5String(MessageDigest digest) {
-        if (null == digest) {
-            return null;
-        }
-        BigInteger integer = new BigInteger(1, digest.digest());
-        return integer.toString(16);
     }
 }

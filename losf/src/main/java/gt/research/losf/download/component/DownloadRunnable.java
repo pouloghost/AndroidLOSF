@@ -284,7 +284,7 @@ public class DownloadRunnable implements Runnable {
             DownloadControlException.pause();
         }
         //check network type
-        if (mBlock.getNetwork() > state.getNetwork()) {
+        if (mBlock.getNetwork() < state.getNetwork()) {
             state.waitForNetwork(mBlock);
             DownloadControlException.network();
         }

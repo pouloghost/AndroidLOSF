@@ -37,6 +37,22 @@ public class ControlStateCenter {
         return mNetwork;
     }
 
+    public synchronized void setNetwork(int network) {
+        mNetwork = network;
+        onNewNetwork();
+    }
+
+    private void onNewNetwork() {
+        synchronized (mNetworkWaitList) {
+            for (IBlockInfo blockInfo : mNetworkWaitList) {
+                if (blockInfo.getNetwork() < mNetwork) {
+                    startBlocks(blockInfo.getId());
+                    networkMeets(blockInfo);
+                }
+            }
+        }
+    }
+
     public void startFile(IFileInfo info) {
         synchronized (mPendingStartFiles) {
             mPendingStartFiles.add(info);
@@ -120,6 +136,10 @@ public class ControlStateCenter {
     }
 
     public void waitForNetwork(IBlockInfo info) {
+        if (info.getNetwork() < getNetwork()) {
+            startBlocks(info.getId());
+            return;
+        }
         synchronized (mNetworkWaitList) {
             mNetworkWaitList.add(info);
         }

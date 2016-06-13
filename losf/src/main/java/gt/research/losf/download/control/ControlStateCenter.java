@@ -3,8 +3,10 @@ package gt.research.losf.download.control;
 import java.util.HashSet;
 import java.util.Set;
 
+import gt.research.losf.LosfApplication;
 import gt.research.losf.journal.IBlockInfo;
 import gt.research.losf.journal.IFileInfo;
+import gt.research.losf.util.NetworkUtil;
 
 /**
  * Created by GT on 2016/5/25.
@@ -24,6 +26,7 @@ public class ControlStateCenter {
     }
 
     private ControlStateCenter() {
+        mNetwork = NetworkUtil.getNetworkLevel(LosfApplication.getInstance());
     }
 
     private int mNetwork;
